@@ -7,6 +7,8 @@ export default function Gallery() {
     { src: "/grem-hero.jpg", title: "PURE_CHAOS.LOG", status: "ENCRYPTED" },
     { src: "/gremworld.jpg", title: "VOID_WATCHING.LOG", status: "ENCRYPTED" },
     { src: "/loregrem.jpg", title: "DEAD_CHAINS_DUST.LOG", status: "CORRUPTED" },
+    { src: "/full-net.jpg", title:
+"FLUFF-NET CONSOLE.LOG", status: "ENCRYPTED" },
   ];
 
 
