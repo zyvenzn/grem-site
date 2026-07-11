@@ -6,7 +6,9 @@ export default function Gallery() {
     { src: "/gremwtf.jpg", title: "NO_SLEEP_48H.LOG", status: "CORRUPTED" },
     { src: "/grem-hero.jpg", title: "PURE_CHAOS.LOG", status: "ENCRYPTED" },
     { src: "/gremworld.jpg", title: "VOID_WATCHING.LOG", status: "ENCRYPTED" },
+    { src: "/loregrem.jpg", title: "DEAD_CHAINS_DUST.LOG", status: "CORRUPTED" },
   ];
+
 
   return (
     <section style={{ width: "100%", padding: "40px 20px 80px", boxSizing: "border-box" }}>
