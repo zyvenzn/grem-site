@@ -9,7 +9,11 @@ export default function Gallery() {
     { src: "/loregrem.jpg", title: "DEAD_CHAINS_DUST.LOG", status: "CORRUPTED" },
     { src: "/full-net.jpg", title:
 "FLUFF-NET CONSOLE.LOG", status: "ENCRYPTED" },
+    { src: "/caffeine-overdose.jpg", title: "CAFFEINE_OVERDOSE.LOG", status: "CRITICAL" },
+    { src: "/rugpull-panic.jpg", title: "RUGPULL_PANIC.LOG", status: "TERMINATED" },
+    { src: "/gmi-sunrise.jpg", title: "GMI_SUNRISE.LOG", status: "OPERATIONAL" },
   ];
+  
 
 
   return (
