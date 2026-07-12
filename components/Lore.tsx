@@ -36,14 +36,28 @@ export default function Lore() {
 
         <div style={{ padding: "40px 30px", textAlign: "center" }}>
           <h2 style={{ marginBottom: "24px", color: "#f3f4f6" }}>
-            WHAT IS GREM?
+            KNOWN FACTS ABOUT GREM
           </h2>
 
           <p style={{ opacity: 0.8, lineHeight: 2, color: "#d1d5db" }}>
-            GREM doesn't trade. GREM doesn't build. GREM doesn't explain itself. <br />
-            <span style={{ color: "#ef4444", fontWeight: "bold" }}>GREM simply appears wherever chaos exists.</span> <br />
-            It lives on your market anxieties, refueling itself with every red candle on the chart.
-          </p>
+  Nobody knows what GREM is. <br />
+  Nobody knows where it came from. <br />
+  Nobody knows what it wants. <br /><br />
+
+  <span style={{ color: "#a855f7", fontWeight: "bold" }}>
+    The only confirmed facts are:
+  </span>
+  <br />
+  • Drinks too much coffee.
+  <br />
+  • Appears during chaos.
+  <br />
+  • Frequently stares at walls.
+  <br />
+  • Makes questionable decisions.
+  <br />
+  • Somehow survives every market cycle.
+</p>
 
           {/* Info Box */}
           <div style={{ display: "flex", justifyContent: "center", gap: "20px", marginTop: "40px", flexWrap: "wrap" }}>
