@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "GREM",
-  description: "feeds on chaos.",
+  title: "GREM | The Creature That Survives Every Crypto Cycle",
+description:
+  "GREM is a confused creature born from crypto chaos. Raised by rug pulls, powered by coffee, and somehow still alive.",
 
   keywords: [
     "GREM",
@@ -15,8 +16,9 @@ export const metadata: Metadata = {
   ],
 
   openGraph: {
-    title: "GREM",
-    description: "feeds on chaos.",
+    title: "GREM | Feeds On Chaos",
+description:
+  "A confused creature that somehow survives every crypto cycle.",
     siteName: "GREM",
     type: "website",
     images: [

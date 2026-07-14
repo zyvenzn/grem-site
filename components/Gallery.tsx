@@ -1,199 +1,167 @@
 import Image from "next/image";
 
 export default function Gallery() {
-  const logs = [
+  const moments = [
     {
       src: "/grem.jpg",
-      title: "MANIFESTATION.LOG",
-      status: "ENCRYPTED",
+      title: "GREM Appears",
       report:
-        "Nobody knows where the creature came from. Nobody knows why it appeared."
+        "Nobody knows where GREM came from. Nobody knows why it stayed.",
     },
-
     {
       src: "/gremwtf.jpg",
-      title: "PURPLE_SELECTION.LOG",
-      status: "CRITICAL",
+      title: "GREM Chooses Purple",
       report:
-        "GREM spent 7 hours staring at a wall before choosing the color purple."
+        "After staring at a wall for seven hours, GREM decided purple was the correct answer.",
     },
-
     {
       src: "/grem-hero.jpg",
-      title: "VOID_WATCHING.LOG",
-      status: "ENCRYPTED",
+      title: "GREM Watches The Market",
       report:
-        "The creature has been watching for an unknown amount of time."
+        "Nobody asked GREM to watch the charts. It did it anyway.",
     },
-
     {
       src: "/gremworld.jpg",
-      title: "NEW_SIGHTING.LOG",
-      status: "OPERATIONAL",
+      title: "GREM Joins The World",
       report:
-        "The creature has been spotted again. No further information is available."
+        "The creature left its cave and immediately found more chaos.",
     },
-
     {
       src: "/loregrem.jpg",
-      title: "WALL_RECRUITMENT.LOG",
-      status: "OPERATIONAL",
+      title: "GREM Recruits A Wall",
       report:
-        "The wall has officially joined the team. Its responsibilities remain unclear."
+        "The wall officially joined the operation. Nobody knows what it does.",
     },
-
     {
       src: "/full-net.jpg",
-      title: "FLUFF_NET_CONSOLE.LOG",
-      status: "ENCRYPTED",
+      title: "GREM Uses The Internet",
       report:
-        "Several anomalies were detected. Most were ignored immediately."
+        "Several discoveries were made. Most were ignored immediately.",
     },
-
     {
       src: "/caffeine-overdose.jpg",
-      title: "CAFFEINE_OVERDOSE.LOG",
-      status: "CRITICAL",
+      title: "GREM After 37 Coffees",
       report:
-        "Subject consumed dangerous amounts of coffee and attempted market analysis."
+        "For a brief moment, GREM thought it understood crypto.",
     },
-
     {
       src: "/rugpull-panic.jpg",
-      title: "RUGPULL_PANIC.LOG",
-      status: "TERMINATED",
+      title: "GREM During A Rug Pull",
       report:
-        "Subject sold the bottom and instantly regretted the decision."
+        "Sold the bottom. Regretted everything instantly.",
     },
-
     {
       src: "/gmi-sunrise.jpg",
-      title: "GMI_SUNRISE.LOG",
-      status: "OPERATIONAL",
+      title: "GREM Sees A Green Candle",
       report:
-        "Against all expectations, optimism briefly returned."
+        "Hope returned. Temporarily.",
     },
   ];
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "CRITICAL":
-        return "#ef4444";
-      case "TERMINATED":
-        return "#f97316";
-      case "OPERATIONAL":
-        return "#10b981";
-      default:
-        return "#a855f7";
-    }
-  };
-
   return (
     <section
+      id="gallery"
       style={{
-        width: "100%",
-        padding: "40px 20px 80px",
-        boxSizing: "border-box",
+        padding: "80px 20px",
+        maxWidth: "1200px",
+        margin: "0 auto",
       }}
     >
-      <h2
+      <div
         style={{
           textAlign: "center",
-          marginBottom: "40px",
-          fontSize: "22px",
-          fontFamily: "monospace",
-          fontWeight: "bold",
-          color: "#ef4444",
-          letterSpacing: "2px",
+          marginBottom: "50px",
         }}
       >
-        // CHAOS_LOGS_DATABASE
-      </h2>
+        <div
+          style={{
+            color: "#a855f7",
+            fontSize: "13px",
+            letterSpacing: "2px",
+            textTransform: "uppercase",
+            marginBottom: "10px",
+          }}
+        >
+          Life Inside GREM World
+        </div>
+
+        <h2
+          style={{
+            color: "#ffffff",
+            fontSize: "clamp(36px,5vw,60px)",
+            margin: 0,
+          }}
+        >
+          Chaos Moments
+        </h2>
+
+        <p
+          style={{
+            color: "#9ca3af",
+            marginTop: "20px",
+            lineHeight: "1.8",
+            maxWidth: "700px",
+            marginInline: "auto",
+          }}
+        >
+          A collection of documented moments from the life of a creature
+          that somehow survives every cycle.
+        </p>
+      </div>
 
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "20px",
-          maxWidth: "1000px",
-          margin: "0 auto",
+          gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
+          gap: "24px",
         }}
       >
-        {logs.map((log) => (
+        {moments.map((item) => (
           <div
-            key={log.src}
+            key={item.title}
             style={{
-              background: "#0a0a0a",
+              background: "rgba(10,10,10,0.85)",
               border: "1px solid rgba(168,85,247,0.15)",
-              borderRadius: "12px",
+              borderRadius: "20px",
               overflow: "hidden",
-              position: "relative",
-              transition: "all 0.3s ease",
+              transition: "0.3s ease",
             }}
           >
-            <div
+            <Image
+              src={item.src}
+              alt={item.title}
+              width={600}
+              height={600}
               style={{
-                overflow: "hidden",
-                position: "relative",
+                width: "100%",
+                height: "auto",
+                display: "block",
               }}
-            >
-              <Image
-                src={log.src}
-                alt="GREM DATA"
-                width={500}
-                height={500}
-                style={{
-                  width: "100%",
-                  height: "auto",
-                  display: "block",
-                  filter: "grayscale(10%)",
-                }}
-              />
-
-              <span
-                style={{
-                  position: "absolute",
-                  top: "12px",
-                  left: "12px",
-                  background: getStatusColor(log.status),
-                  padding: "4px 10px",
-                  borderRadius: "6px",
-                  fontSize: "10px",
-                  fontFamily: "monospace",
-                  color: "#fff",
-                  fontWeight: "bold",
-                }}
-              >
-                {log.status}
-              </span>
-            </div>
+            />
 
             <div
               style={{
-                padding: "16px",
-                borderTop: "1px solid rgba(255,255,255,0.05)",
+                padding: "20px",
               }}
             >
-              <h4
+              <h3
                 style={{
-                  fontSize: "13px",
-                  fontFamily: "monospace",
                   color: "#ffffff",
-                  marginBottom: "10px",
+                  marginBottom: "12px",
+                  fontSize: "20px",
                 }}
               >
-                {log.title}
-              </h4>
+                {item.title}
+              </h3>
 
               <p
                 style={{
-                  fontSize: "12px",
-                  lineHeight: "1.7",
                   color: "#9ca3af",
+                  lineHeight: "1.7",
                   margin: 0,
                 }}
               >
-                {log.report}
+                {item.report}
               </p>
             </div>
           </div>

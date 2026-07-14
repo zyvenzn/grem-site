@@ -1,8 +1,21 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* Di versi ini, allowedDevOrigins ditaruh langsung di sini, bukan di dalam experimental */
-  allowedDevOrigins: ['10.11.196.138', 'localhost:3000', '10.11.196.138:3000']
+  allowedDevOrigins: ["192.168.1.6"],
+
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
