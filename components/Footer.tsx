@@ -1,108 +1,27 @@
+import MagneticButton from "./MagneticButton";
+
 export default function Footer() {
   return (
-    <footer
-      style={{
-        padding: "120px 20px 80px",
-        textAlign: "center",
-        borderTop: "1px solid rgba(255,255,255,0.05)",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "800px",
-          margin: "0 auto",
-        }}
-      >
-        <div
-          style={{
-            color: "#a855f7",
-            fontSize: "13px",
-            letterSpacing: "2px",
-            textTransform: "uppercase",
-            marginBottom: "15px",
-          }}
-        >
-          Enter GREM World
+    <footer className="footer">
+      <div className="container footer-main">
+        <p className="eyebrow">The signal remains</p>
+        <h2 className="footer-title">Feeds<br /><span>on chaos.</span></h2>
+        <p className="footer-copy">Millions of opinions. Thousands of charts. One confused creature. Join the transmission before GREM changes its mind.</p>
+        <div className="footer-actions">
+          <MagneticButton href="https://telegram.me/gremwtf" primary>
+            Enter GREM world
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </MagneticButton>
+          <MagneticButton href="https://x.com/GREMWTF">Follow @GREMWTF</MagneticButton>
         </div>
 
-        <h2
-          style={{
-            fontSize: "clamp(42px,7vw,90px)",
-            color: "#fff",
-            margin: 0,
-            lineHeight: "1",
-          }}
-        >
-          FEEDS
-          <br />
-          ON CHAOS
-        </h2>
-
-        <p
-          style={{
-            color: "#9ca3af",
-            fontSize: "18px",
-            lineHeight: "1.8",
-            marginTop: "30px",
-            maxWidth: "650px",
-            marginInline: "auto",
-          }}
-        >
-          Millions of opinions.
-          <br />
-          Thousands of charts.
-          <br />
-          One confused creature.
-        </p>
-
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "15px",
-            flexWrap: "wrap",
-            marginTop: "40px",
-          }}
-        >
-          <a
-            href="https://telegram.me/gremwtf"
-            target="_blank"
-            style={{
-              background: "#a855f7",
-              color: "#fff",
-              padding: "14px 28px",
-              borderRadius: "12px",
-              textDecoration: "none",
-              fontWeight: "700",
-            }}
-          >
-            Join Telegram
-          </a>
-
-          <a
-            href="https://x.com/GREMWTF"
-            target="_blank"
-            style={{
-              border: "1px solid rgba(255,255,255,0.15)",
-              color: "#fff",
-              padding: "14px 28px",
-              borderRadius: "12px",
-              textDecoration: "none",
-              fontWeight: "700",
-            }}
-          >
-            Follow X
-          </a>
-        </div>
-
-        <div
-          style={{
-            marginTop: "60px",
-            color: "#6b7280",
-            fontSize: "13px",
-          }}
-        >
-          © GREM • The creature somehow remains.
+        <div className="footer-bottom">
+          <span>© 2026 GREM / The creature remains</span>
+          <div className="footer-socials">
+            <a href="#top">Top</a>
+            <a href="https://x.com/GREMWTF" target="_blank" rel="noreferrer">X</a>
+            <a href="https://telegram.me/gremwtf" target="_blank" rel="noreferrer">Telegram</a>
+          </div>
         </div>
       </div>
     </footer>
