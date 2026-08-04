@@ -1,84 +1,36 @@
+"use client";
+
+import { motion } from "framer-motion";
+
+const stats = [
+  ["Coffee consumed", "37", "cups"],
+  ["Rugs witnessed", "9,999", "+"],
+  ["Sanity remaining", "2", "%"],
+  ["Cycles survived", "∞", ""],
+];
+
 export default function ChaosCounter() {
   return (
-    <section
-      style={{
-        maxWidth: "1100px",
-        margin: "0 auto",
-        padding: "20px 20px 80px",
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
-          gap: "20px",
-        }}
+    <section className="counter-section" aria-label="GREM survival statistics">
+      <motion.div
+        className="container counter-grid"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: .45 }}
+        transition={{ staggerChildren: .08 }}
       >
-        <Card
-          title="Coffee Consumed"
-          value="37 Cups"
-          color="#a855f7"
-        />
-
-        <Card
-          title="Rug Pulls Witnessed"
-          value="9,999+"
-          color="#ef4444"
-        />
-
-        <Card
-          title="Sanity Remaining"
-          value="2%"
-          color="#f59e0b"
-        />
-
-        <Card
-          title="Cycles Survived"
-          value="∞"
-          color="#10b981"
-        />
-      </div>
+        {stats.map(([label, value, suffix]) => (
+          <motion.div
+            className="counter-item"
+            key={label}
+            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
+            transition={{ duration: .65, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className="counter-label">{label}</div>
+            <div className="counter-value">{value}<span>{suffix}</span></div>
+          </motion.div>
+        ))}
+      </motion.div>
     </section>
-  );
-}
-
-function Card({
-  title,
-  value,
-  color,
-}: {
-  title: string;
-  value: string;
-  color: string;
-}) {
-  return (
-    <div
-      style={{
-        background: "rgba(10,10,10,0.85)",
-        border: "1px solid rgba(168,85,247,0.15)",
-        borderRadius: "20px",
-        padding: "24px",
-      }}
-    >
-      <div
-        style={{
-          color: "#9ca3af",
-          fontSize: "13px",
-          marginBottom: "12px",
-        }}
-      >
-        {title}
-      </div>
-
-      <div
-        style={{
-          color,
-          fontSize: "34px",
-          fontWeight: "800",
-        }}
-      >
-        {value}
-      </div>
-    </div>
   );
 }

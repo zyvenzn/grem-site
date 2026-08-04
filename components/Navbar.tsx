@@ -1,100 +1,56 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+
 export default function Navbar() {
+  const [visible, setVisible] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
+  const previousY = useRef(0);
+
+  useEffect(() => {
+    function handleScroll() {
+      const currentY = window.scrollY;
+      setScrolled(currentY > 24);
+      setVisible(currentY < 80 || currentY < previousY.current);
+      previousY.current = currentY;
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-    <nav
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 999,
-        backdropFilter: "blur(16px)",
-        background: "rgba(5,5,5,0.75)",
-        borderBottom: "1px solid rgba(168,85,247,0.12)",
-      }}
+    <motion.div
+      className="navbar-wrap"
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: visible ? 0 : -110, opacity: 1 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
     >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "16px 20px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {/* Logo */}
-        <div
-          style={{
-            color: "#ffffff",
-            fontWeight: "900",
-            fontSize: "24px",
-            letterSpacing: "1px",
-          }}
-        >
-          GREM
+      <nav className="navbar" aria-label="Primary navigation" style={{ background: scrolled ? "rgba(8, 6, 11, .82)" : undefined }}>
+        <div className="navbar-inner">
+          <a className="brand" href="#top" aria-label="GREM home">
+            <span className="brand-mark" aria-hidden="true" />
+            GREM
+          </a>
+
+          <div className="nav-links">
+            <a className="nav-link" href="#lore">Lore</a>
+            <a className="nav-link" href="#incidents">Intel</a>
+            <a className="nav-link" href="#gallery">Sightings</a>
+            <a className="nav-link" href="https://x.com/GREMWTF" target="_blank" rel="noreferrer">X / Twitter</a>
+          </div>
+
+          <div className="nav-actions">
+            <a className="nav-join" href="https://telegram.me/gremwtf" target="_blank" rel="noreferrer">
+              <span>Enter chaos</span>
+              <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </a>
+          </div>
         </div>
-
-        {/* Menu */}
-        <div
-          style={{
-            display: "flex",
-            gap: "20px",
-            alignItems: "center",
-          }}
-        >
-          <a
-            href="#about"
-            style={{
-              color: "#9ca3af",
-              textDecoration: "none",
-              fontSize: "14px",
-            }}
-          >
-            About
-          </a>
-
-          <a
-            href="#gallery"
-            style={{
-              color: "#9ca3af",
-              textDecoration: "none",
-              fontSize: "14px",
-            }}
-          >
-            Gallery
-          </a>
-
-          <a
-            href="https://x.com/GREMWTF"
-            target="_blank"
-            style={{
-              color: "#ffffff",
-              textDecoration: "none",
-              fontSize: "14px",
-            }}
-          >
-            X
-          </a>
-
-          <a
-            href="https://telegram.me/gremwtf"
-            target="_blank"
-            style={{
-              background: "#a855f7",
-              color: "#ffffff",
-              textDecoration: "none",
-              padding: "10px 16px",
-              borderRadius: "10px",
-              fontWeight: "700",
-              fontSize: "14px",
-            }}
-          >
-            Join
-          </a>
-        </div>
-      </div>
-    </nav>
+      </nav>
+    </motion.div>
   );
 }
