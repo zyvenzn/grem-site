@@ -1,0 +1,3 @@
+{
+  "/api/token/[mint]/route": "app/api/token/[mint]/route.js"
+}

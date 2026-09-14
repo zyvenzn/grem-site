@@ -32,7 +32,32 @@
     "afterFiles": [],
     "fallback": []
   },
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/api/intelligence/[address]",
+      "regex": "^/api/intelligence/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPaddress": "nxtPaddress"
+      },
+      "namedRegex": "^/api/intelligence/(?<nxtPaddress>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/token/[mint]",
+      "regex": "^/api/token/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPmint": "nxtPmint"
+      },
+      "namedRegex": "^/api/token/(?<nxtPmint>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/wallet/[address]",
+      "regex": "^/api/wallet/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPaddress": "nxtPaddress"
+      },
+      "namedRegex": "^/api/wallet/(?<nxtPaddress>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",
@@ -51,6 +76,18 @@
       "regex": "^/_not\\-found(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/api/health",
+      "regex": "^/api/health(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/health(?:/)?$"
+    },
+    {
+      "page": "/api/tokens",
+      "regex": "^/api/tokens(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/tokens(?:/)?$"
     },
     {
       "page": "/docs",

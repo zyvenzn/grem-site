@@ -11,5 +11,5 @@ export const NAV_LINKS = [
   { label: "Docs", href: "/docs" },
 ];
 
-export const EXAMPLE_WALLET = "57rXqaQsvgYBKwebP2StfqQeCBjBS4jsrZ7EJN5aU2V9b";
+export const EXAMPLE_WALLET = "wifq4CRwpXCK8NYtKNsQAYoDethT1aR7R1DaKCLFgAd";
 export const EXAMPLE_TOKEN = "EKpQGSJtjMFqKZ9KQanSqYXRcF8fBopzLHYxdM65zcjm";

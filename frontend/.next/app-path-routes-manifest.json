@@ -1,6 +1,11 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/api/health/route": "/api/health",
+  "/api/intelligence/[address]/route": "/api/intelligence/[address]",
+  "/api/token/[mint]/route": "/api/token/[mint]",
+  "/api/tokens/route": "/api/tokens",
+  "/api/wallet/[address]/route": "/api/wallet/[address]",
   "/docs/page": "/docs",
   "/favicon.ico/route": "/favicon.ico",
   "/grem/page": "/grem",
