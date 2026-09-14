@@ -1,0 +1,140 @@
+{
+  "project_name": "GREM - Solana-Native Crypto Intelligence ('The Wallet Goblin')",
+  "brand_identity": {
+    "tagline": "The Wallet Goblin",
+    "primary_phrase": "You trade. GREM watches.",
+    "brand_persona": "Crypto-native, internet-native, memeable, mysterious, intelligent, underground, slightly chaotic, modern.",
+    "visual_theme": "Premium dark Web3 dashboard with 8-bit pixel-art elements, subtle CRT scanlines, glowing neon green accents, and clean modern typography. Must feel like a real high-performance crypto intelligence tool with deep meme-native soul."
+  },
+  "colors": {
+    "background": {
+      "base_bg": "#070609",
+      "surface_bg": "#0D0A12",
+      "panel_bg": "#13101C",
+      "panel_border": "rgba(0, 255, 102, 0.18)",
+      "card_bg": "#181424",
+      "overlay_bg": "rgba(7, 6, 9, 0.85)"
+    },
+    "accents": {
+      "neon_green_primary": "#00FF66",
+      "neon_green_bright": "#33FF85",
+      "neon_green_glow": "rgba(0, 255, 102, 0.4)",
+      "solana_purple": "#9945FF",
+      "solana_teal": "#14F195",
+      "cyber_violet": "#A66CFF",
+      "cyber_violet_deep": "#4B167A"
+    },
+    "text": {
+      "heading": "#FFFFFF",
+      "body": "#E2E8F0",
+      "muted": "#94A3B8",
+      "subtle": "#64748B",
+      "goblin_quote": "#33FF85"
+    },
+    "semantics_risk": {
+      "lower_risk": "#00FF66",
+      "warning_risk": "#F59E0B",
+      "critical_risk": "#EF4444",
+      "neutral_metric": "#38BDF8"
+    }
+  },
+  "typography": {
+    "fonts": {
+      "pixel_accent": "'Press Start 2P', 'Silkscreen', 'Courier New', monospace",
+      "heading_display": "var(--font-display), 'Cabinet Grotesk', 'Outfit', 'Plus Jakarta Sans', sans-serif",
+      "body_text": "var(--font-body), 'Inter', 'DM Sans', sans-serif",
+      "data_code": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace"
+    },
+    "hierarchy": {
+      "h1_hero": "text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight uppercase",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight uppercase",
+      "h3_subsection": "text-xl sm:text-2xl font-bold",
+      "h4_card_title": "text-lg sm:text-xl font-semibold",
+      "body_main": "text-base leading-relaxed text-slate-300",
+      "small_label": "text-xs font-mono uppercase tracking-widest text-slate-400"
+    }
+  },
+  "layout_and_grids": {
+    "spacing_scale": "Generous spacing philosophy: p-4, p-6, p-8, p-12, p-16. Always ensure containers with borders have p-6 or p-8 internal padding to avoid text collisions.",
+    "container_max_width": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "bento_dashboard_grid": "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6",
+    "table_to_cards": "Mobile-first approach: Analytics tables must transform into horizontally swipeable or stacked cards on mobile views (< 768px)."
+  },
+  "visual_enhancers": {
+    "scanlines": "Subtle repeating linear gradient for CRT feel on specific containers (0.03 opacity overlay). Do NOT cover the entire viewport in heavy scanlines.",
+    "pixel_borders": "Subtle 1px solid borders with 2px corner offset accent boxes in neon green or Solana purple.",
+    "glassmorphism": "backdrop-blur-xl bg-[#0d0a12]/75 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+    "ambient_glow": "radial-gradient(circle at 50% 50%, rgba(0,255,102,0.12) 0%, transparent 70%)"
+  },
+  "component_guidelines": {
+    "Navbar": {
+      "description": "Sticky dark navbar with backdrop blur, 8-bit GREM logo badge, navigation links (Wallet, Token, Intelligence, Discovery, $GREM, Lore, About), wallet connect primary button with neon green border glow, and mobile hamburger menu.",
+      "styles": "fixed top-0 left-0 right-0 z-50 bg-[#070609]/80 backdrop-blur-md border-b border-white/10 px-4 py-3",
+      "data_testid": "navbar"
+    },
+    "Footer": {
+      "description": "Deep dark footer featuring massive 'THE WALLET GOBLIN' outlined display text, quick links, social channels (Twitter/X, Telegram, Pump.fun), live SOL price ticker, and copyright.",
+      "data_testid": "footer"
+    },
+    "TokenCard": {
+      "description": "Displays token icon, symbol, name, live price, 24h gain/loss with green/red indicator, liquidity, market cap, and quick GREM risk badge.",
+      "styles": "bg-[#13101C] border border-slate-800 hover:border-[#00FF66]/50 rounded-xl p-5 transition-all duration-200",
+      "data_testid": "token-card"
+    },
+    "WalletSummary": {
+      "description": "Header metric panel showing total portfolio value in USD & SOL, 24h change, token count, top allocation pie/bar, and trader behavior archetype tag.",
+      "data_testid": "wallet-summary"
+    },
+    "RiskBadge": {
+      "description": "Semantic badge indicating risk level: Lower Risk (Green #00FF66), Warning Risk (Yellow #F59E0B), Critical Risk (Red #EF4444). Include pixel icon or warning sign.",
+      "data_testid": "risk-badge"
+    },
+    "MetricCard": {
+      "description": "Data widget showing single metric with clear title, large mono value, secondary trend percentage, and subtle background chart micro-sparkline.",
+      "data_testid": "metric-card"
+    },
+    "IntelligenceCard": {
+      "description": "GREM's Take natural language summary component with 8-bit goblin avatar, typewriter effect or terminal styling, key detected trading patterns, and score index.",
+      "data_testid": "intelligence-card"
+    },
+    "SearchInput": {
+      "description": "Solana address / token contract input with quick paste button, 8-bit search icon, neon green focus ring, and recent searches dropdown.",
+      "data_testid": "search-input"
+    },
+    "LoadingState": {
+      "description": "Animated 8-bit GREM goblin searching through CRT code monitor with glowing green progress bar and chaotic terminal text logs.",
+      "data_testid": "loading-state"
+    },
+    "EmptyState": {
+      "description": "Pixel art GREM sleeping or holding magnifying glass with message 'No wallet or token selected. Enter a Solana address to begin watching.'",
+      "data_testid": "empty-state"
+    },
+    "ErrorState": {
+      "description": "Pixel art GREM looking confused or holding broken cable with red alert glow and 'Invalid Solana address or RPC request failed' message.",
+      "data_testid": "error-state"
+    }
+  },
+  "image_urls": {
+    "grem_logo_8bit": "/public/grem.jpg",
+    "grem_hero_control_room": "/public/grem-hero.jpg",
+    "grem_world_lore": "/public/gremworld.jpg",
+    "grem_wtf_meme": "/public/gremwtf.jpg",
+    "grem_lore_portrait": "/public/loregrem.jpg",
+    "matrix_code_texture": "https://images.unsplash.com/photo-1741704138898-dcc1b07a4f04?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHwzfHxuZW9uJTIwZ3JlZW4lMjBtYXRyaXglMjBnbG93aW5nJTIwY29kZSUyMGRhcmt8ZW58MHx8fHwxNzg5MzcxNzk1fDA&ixlib=rb-4.1.0&q=85",
+    "green_glow_particles": "https://images.unsplash.com/photo-1741704138665-57f72cf743f7?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDQ2NDF8MHwxfHNlYXJjaHw0fHxuZW9uJTIwZ3JlZW4lMjBtYXRyaXglMjBnbG93aW5nJTIwY29kZSUyMGRhcmt8ZW58MHx8fHwxNzg5MzcxNzk1fDA&ixlib=rb-4.1.0&q=85"
+  },
+  "instructions_to_main_agent": [
+    "Ensure all interactive components (buttons, inputs, links, cards, tables) have explicit data-testid attributes.",
+    "Implement mobile-first responsive layout where tables collapse or scroll smoothly into card views on small viewports.",
+    "Maintain the dark, mysterious, crypto-native vibe with neon green primary accents and purple Solana highlights.",
+    "Incorporate the provided 8-bit GREM mascot images (/public/grem.jpg, /public/grem-hero.jpg, etc.) prominently across hero, loading, empty, and lore sections.",
+    "Use semantic risk colors consistently across Wallet Analyzer and Token Analyzer (Green = Lower Risk, Yellow = Warning, Red = Critical).",
+    "Never rely on default browser inputs or transparent header dropdowns."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": {
+    "contrast": "Ensure normal text maintains 4.5:1 contrast and interactive elements stand out clearly against near-black surfaces.",
+    "hover_states": "Always explicitly define hover colors (e.g. hover:bg-[#00FF66] hover:text-[#070609] transition-colors).",
+    "animations": "Use framer-motion for smooth micro-interactions, modal reveals, and status badge pulses.",
+    "testing_ids": "MUST add data-testid to every interactive component (e.g., data-testid='wallet-search-btn')."
+  }
+}
