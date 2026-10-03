@@ -175,34 +175,65 @@ export async function getToken(mint: string) {
   };
 }
 
+// One row of the Token Discovery grid, built from a Solana Tracker list item.
+function normalizeListItem(it: any, now: number) {
+  const tk = it?.token ?? {};
+  const pool = Array.isArray(it?.pools) && it.pools.length ? it.pools[0] : {};
+  const events = it?.events ?? {};
+  const risk = it?.risk ?? {};
+  const score = typeof risk?.score === "number" ? risk.score : null;
+  const created = tk?.creation?.created_time ? tk.creation.created_time * (tk.creation.created_time < 1e12 ? 1000 : 1) : null;
+  return {
+    mint: tk?.mint ?? "",
+    name: tk?.name ?? tk?.symbol ?? "Unknown",
+    symbol: tk?.symbol ?? "?",
+    logo: tk?.image ?? null,
+    price_usd: usdOf(pool?.price),
+    change_24h: n(events?.["24h"]?.priceChangePercentage),
+    market_cap_usd: usdOf(pool?.marketCap),
+    liquidity_usd: usdOf(pool?.liquidity),
+    volume_24h_usd: n(pool?.txns?.volume24h, pool?.txns?.volume),
+    buys: Math.round(n(it?.buys, pool?.txns?.buys)),
+    sells: Math.round(n(it?.sells, pool?.txns?.sells)),
+    risk_score: score,
+    risk_level: riskLevel(score),
+    pump_fun: pool?.market === "pumpfun" || Boolean(pool?.curve),
+    is_new: created ? now - created < 48 * 3600 * 1000 : false,
+    created_at: created ? new Date(created).toISOString() : null,
+  };
+}
+
+async function fetchList(path: string): Promise<any[]> {
+  const data = await trackerGet(path);
+  return Array.isArray(data) ? data : data?.data ?? data?.tokens ?? [];
+}
+
 export async function getTrending() {
-  const data = await trackerGet(`/tokens/trending`);
-  const arr: any[] = Array.isArray(data) ? data : data?.data ?? data?.tokens ?? [];
+  const arr = await fetchList(`/tokens/trending`);
   const now = Date.now();
-  return arr.slice(0, 40).map((it: any) => {
-    const tk = it?.token ?? {};
-    const pool = Array.isArray(it?.pools) && it.pools.length ? it.pools[0] : {};
-    const events = it?.events ?? {};
-    const risk = it?.risk ?? {};
-    const score = typeof risk?.score === "number" ? risk.score : null;
-    const created = tk?.creation?.created_time ? tk.creation.created_time * (tk.creation.created_time < 1e12 ? 1000 : 1) : null;
-    return {
-      mint: tk?.mint ?? "",
-      name: tk?.name ?? tk?.symbol ?? "Unknown",
-      symbol: tk?.symbol ?? "?",
-      logo: tk?.image ?? null,
-      price_usd: usdOf(pool?.price),
-      change_24h: n(events?.["24h"]?.priceChangePercentage),
-      market_cap_usd: usdOf(pool?.marketCap),
-      liquidity_usd: usdOf(pool?.liquidity),
-      volume_24h_usd: n(pool?.txns?.volume24h, pool?.txns?.volume),
-      buys: Math.round(n(it?.buys, pool?.txns?.buys)),
-      sells: Math.round(n(it?.sells, pool?.txns?.sells)),
-      risk_score: score,
-      risk_level: riskLevel(score),
-      pump_fun: pool?.market === "pumpfun" || Boolean(pool?.curve),
-      is_new: created ? now - created < 48 * 3600 * 1000 : false,
-      created_at: created ? new Date(created).toISOString() : null,
-    };
-  }).filter((t: any) => t.mint);
+  return arr
+    .slice(0, 40)
+    .map((it: any) => normalizeListItem(it, now))
+    .filter((t: any) => t.mint);
+}
+
+// Wider net for "new tokens that already reached a big market cap":
+// merges trending + 24h volume leaders + latest launches, de-duplicated by mint.
+// Succeeds as long as at least one of the three lists loads.
+const DISCOVERY_PATHS = ["/tokens/trending", "/tokens/volume/24h", "/tokens/latest"];
+
+export async function getDiscovery() {
+  const results = await Promise.allSettled(DISCOVERY_PATHS.map((p) => fetchList(p)));
+  const lists = results.flatMap((r) => (r.status === "fulfilled" ? [r.value] : []));
+  if (lists.length === 0) throw new TrackerError(502, "provider_unavailable");
+
+  const now = Date.now();
+  const byMint = new Map<string, any>();
+  for (const list of lists) {
+    for (const it of list.slice(0, 100)) {
+      const t = normalizeListItem(it, now);
+      if (t.mint && !byMint.has(t.mint)) byMint.set(t.mint, t);
+    }
+  }
+  return Array.from(byMint.values());
 }
