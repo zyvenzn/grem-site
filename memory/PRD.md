@@ -20,11 +20,14 @@ Solana-native crypto intelligence platform. "You trade. GREM watches."
 - `GET /api/token/{mint}` — token, market, trading, creator, risk, status
 - `GET /api/tokens?q&sort&order&risk&pump_fun&new_only&min_market_cap&min_liquidity&min_volume` — discovery grid
 
-## Data sourcing
-- Token Analyzer: **LIVE** Solana Tracker.
-- Wallet/Intelligence: live Solana Tracker with **deterministic realistic MOCK fallback** when the provider has no data (the example wallet is not a real chain wallet → mock).
-- Token Discovery grid: realistic **MOCK** data by design (prototype).
-- Zerion client is wired as a secondary source (Solana protocol positions unsupported by Zerion).
+## Data sourcing (updated 2026-10)
+- The Next.js route handlers in `frontend/app/api/*` talk to Solana Tracker directly (`lib/server/tracker.ts`). **Everything the frontend shows is live — no mock fallback in the Next.js layer.**
+- Token Analyzer, Token Discovery (trending + 24h volume + latest, merged) and charts: LIVE.
+- Wallet: LIVE holdings, plus **optional enrichment** — `/pnl/{wallet}` (realized/unrealized PnL, win rate) and `/wallet/{wallet}/trades` (recent trade count, volume, distinct tokens, last trade). Both resolve to `null` on any failure; the page still works.
+- Intelligence engine (`lib/server/intelligence.ts`): uses real trade count and win rate when available; otherwise falls back to the old holdings-based estimate (UI labels it "(est.)").
+- API responses are CDN-cacheable: wallet/intelligence 60s, token/tokens/chart 30s.
+- ⚠️ The PnL/trades endpoint shapes were written from the provider docs without a live test — verify against a real wallet with an API key and adjust the normalizers in `tracker.ts` if fields differ.
+- `backend/` (FastAPI + `mockdata.py`) is **legacy** and no longer used by the frontend. Zerion is only wired in that legacy backend.
 
 ## Pages
 Home (hero + features + Green Room lore + Who is GREM), /tracker (Wallet Analyzer), /token (Token Analyzer), /intelligence (GREM Intelligence), /tokens (Discovery), /grem ($GREM — placeholders only, NOT launched, Launching on Pump.fun), /docs (Coming soon).
@@ -37,6 +40,11 @@ Home (hero + features + Green Room lore + Who is GREM), /tracker (Wallet Analyze
 ## Status (2026-06)
 - MVP complete. Backend 100% + Frontend 100% verified by testing agent (iteration_1).
 - All pages, navigation (incl. mobile hamburger), analyzers, intelligence engine, discovery filters/sort, and states (loading/empty/error/invalid) working.
+
+## Hero 3D (2026-10)
+- `components/HeroMascot.tsx` (client) lazy-loads `components/GremScene3D.tsx` (three + @react-three/fiber): a procedural voxel GREM that follows the cursor, with orbiting neon cubes.
+- Falls back to the static `/grem-hero.jpg` on SSR, when WebGL is missing, or when `prefers-reduced-motion` is set. Rendering pauses when the hero is off-screen.
+- Requires: `npm install three @react-three/fiber` and `npm install -D @types/three` in `frontend/`.
 
 ## Backlog / Next
 - P1: Wire Zerion enrichment more deeply once a real wallet with data is used; add real trending endpoint for /api/tokens.
