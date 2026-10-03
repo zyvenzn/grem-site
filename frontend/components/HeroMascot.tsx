@@ -6,26 +6,39 @@ import { Eye } from "lucide-react";
 
 const GremScene3D = dynamic(() => import("./GremScene3D"), { ssr: false });
 
+type Mode = "ssr" | "ok" | "reduced-motion" | "no-webgl";
+
 const noopSubscribe = () => () => {};
 
-let cachedCanRun3D: boolean | null = null;
-function canRun3D(): boolean {
-  if (cachedCanRun3D !== null) return cachedCanRun3D;
+// Why the 3D scene is (not) shown. Stable string snapshot, computed once per page load.
+// Adding ?3d=1 to the URL overrides the reduced-motion preference (useful for testing).
+let cachedMode: Mode | null = null;
+function detectMode(): Mode {
+  if (cachedMode !== null) return cachedMode;
   try {
+    const forced = new URLSearchParams(window.location.search).get("3d") === "1";
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const canvas = document.createElement("canvas");
     const gl = canvas.getContext("webgl2") || canvas.getContext("webgl");
-    cachedCanRun3D = !reduced && !!gl;
+    cachedMode = !gl ? "no-webgl" : reduced && !forced ? "reduced-motion" : "ok";
   } catch {
-    cachedCanRun3D = false;
+    cachedMode = "no-webgl";
   }
-  return cachedCanRun3D;
+  return cachedMode;
 }
+
+const LABELS: Record<Mode, string> = {
+  ssr: "live surveillance · sample feed",
+  ok: "move your cursor · GREM is watching",
+  "reduced-motion": "3D off · reduced motion is on (add ?3d=1 to the URL)",
+  "no-webgl": "3D off · WebGL unavailable in this browser",
+};
 
 // Server render and the first client render show the static image (same markup),
 // then the 3D scene takes over only when WebGL is available and motion is allowed.
 export default function HeroMascot() {
-  const use3D = useSyncExternalStore(noopSubscribe, canRun3D, () => false);
+  const mode = useSyncExternalStore<Mode>(noopSubscribe, detectMode, () => "ssr");
+  const use3D = mode === "ok";
   const wrapRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
 
@@ -65,7 +78,7 @@ export default function HeroMascot() {
         style={{ background: "linear-gradient(180deg, transparent 55%, rgba(7,6,9,0.85))" }}
       />
       <div className="pointer-events-none absolute bottom-3 left-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300 backdrop-blur">
-        <Eye size={12} className="text-[#00ff66]" /> {use3D ? "move your cursor · GREM is watching" : "live surveillance · sample feed"}
+        <Eye size={12} className="text-[#00ff66]" /> {LABELS[mode]}
       </div>
     </div>
   );
