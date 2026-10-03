@@ -31,6 +31,7 @@ export default function TokensPage() {
   const [risk, setRisk] = useState("all");
   const [pumpFun, setPumpFun] = useState(false);
   const [newOnly, setNewOnly] = useState(false);
+  const [recent1m, setRecent1m] = useState(false);
   const [tokens, setTokens] = useState<TokenRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -40,11 +41,20 @@ export default function TokensPage() {
     let active = true;
     setLoading(true);
     api
-      .tokens({ q: debouncedQ, sort, order: "desc", risk, pump_fun: pumpFun, new_only: newOnly })
+      .tokens({
+        q: debouncedQ,
+        sort,
+        order: "desc",
+        risk,
+        pump_fun: pumpFun,
+        new_only: newOnly,
+        min_market_cap: recent1m ? 1000000 : undefined,
+        max_age_days: recent1m ? 10 : undefined,
+      })
       .then((res) => { if (active) { setTokens(res.tokens); setLoading(false); } })
       .catch(() => { if (active) { setTokens([]); setLoading(false); } });
     return () => { active = false; };
-  }, [debouncedQ, sort, risk, pumpFun, newOnly]);
+  }, [debouncedQ, sort, risk, pumpFun, newOnly, recent1m]);
 
   const open = (mint: string) => router.push(`/token?mint=${encodeURIComponent(mint)}`);
 
@@ -55,7 +65,7 @@ export default function TokensPage() {
         <h1 className="mt-4 display text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl">Tokens</h1>
         <p className="mt-4 text-[15px] leading-relaxed text-slate-400">
           Scan the Solana token landscape. Filter by risk, liquidity and Pump.fun status.
-          <span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-slate-600 mt-2">◇ Prototype grid — sample data</span>
+          <span className="block font-mono text-[11px] uppercase tracking-[0.12em] text-slate-600 mt-2">◇ Live data · Solana Tracker</span>
         </p>
       </header>
 
@@ -78,6 +88,7 @@ export default function TokensPage() {
             <Select testid="tokens-risk" value={risk} onChange={setRisk} options={RISKS} />
             <Toggle testid="tokens-pumpfun" active={pumpFun} onClick={() => setPumpFun((v) => !v)} label="Pump.fun" />
             <Toggle testid="tokens-new" active={newOnly} onClick={() => setNewOnly((v) => !v)} label="New" />
+            <Toggle testid="tokens-1m" active={recent1m} onClick={() => setRecent1m((v) => !v)} label="$1M+ · ≤10d" />
           </div>
         </div>
       </div>
