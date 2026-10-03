@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getTrending, TrackerError } from "@/lib/server/tracker";
+import { getDiscovery, getTrending, TrackerError } from "@/lib/server/tracker";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -7,6 +7,10 @@ export const runtime = "nodejs";
 const VALID_SORT = new Set([
   "market_cap_usd", "liquidity_usd", "volume_24h_usd", "buys", "sells", "risk_score", "change_24h", "price_usd",
 ]);
+
+// Edge/CDN cache: identical queries within 30s reuse one provider call,
+// which protects the Solana Tracker quota from repeated hits.
+const CACHE_HEADERS = { "Cache-Control": "public, s-maxage=30, stale-while-revalidate=60" };
 
 export async function GET(req: Request) {
   const sp = new URL(req.url).searchParams;
@@ -19,15 +23,22 @@ export async function GET(req: Request) {
   const minMc = Number(sp.get("min_market_cap") ?? 0);
   const minLiq = Number(sp.get("min_liquidity") ?? 0);
   const minVol = Number(sp.get("min_volume") ?? 0);
+  const rawAge = Number(sp.get("max_age_days") ?? 0);
+  const maxAgeDays = Number.isFinite(rawAge) && rawAge > 0 ? Math.min(rawAge, 365) : 0;
 
   let tokens: any[];
   try {
-    tokens = await getTrending();
+    // Default view = trending only (unchanged). max_age_days switches to the wider discovery list.
+    tokens = maxAgeDays > 0 ? await getDiscovery() : await getTrending();
   } catch (e) {
     const err = e instanceof TrackerError ? e : new TrackerError(502, "provider_unavailable");
     return NextResponse.json({ detail: err.code }, { status: err.status });
   }
 
+  if (maxAgeDays > 0) {
+    const cutoff = Date.now() - maxAgeDays * 86_400_000;
+    tokens = tokens.filter((t) => t.created_at && Date.parse(t.created_at) >= cutoff);
+  }
   if (q) tokens = tokens.filter((t) => t.name.toLowerCase().includes(q) || t.symbol.toLowerCase().includes(q));
   if (risk && risk !== "all") tokens = tokens.filter((t) => t.risk_level === risk);
   if (pumpFun) tokens = tokens.filter((t) => t.pump_fun);
@@ -39,5 +50,8 @@ export async function GET(req: Request) {
   const key = VALID_SORT.has(sort) ? sort : "volume_24h_usd";
   tokens.sort((a, b) => (order === "asc" ? (a[key] ?? 0) - (b[key] ?? 0) : (b[key] ?? 0) - (a[key] ?? 0)));
 
-  return NextResponse.json({ source: "live", count: tokens.length, tokens });
+  return NextResponse.json(
+    { source: "live", is_demo: false, count: tokens.length, tokens },
+    { headers: CACHE_HEADERS },
+  );
 }
