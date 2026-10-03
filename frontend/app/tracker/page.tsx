@@ -4,7 +4,8 @@ import { Suspense, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { api, ApiError } from "@/lib/api";
 import { EXAMPLE_WALLET } from "@/lib/constants";
-import { usd, num, compact } from "@/lib/format";
+import { usd, num, compact, timeAgo } from "@/lib/format";
+import MetricCard from "@/components/ui/MetricCard";
 import SearchInput from "@/components/ui/SearchInput";
 import LoadingState from "@/components/ui/LoadingState";
 import EmptyState from "@/components/ui/EmptyState";
@@ -83,6 +84,42 @@ function TrackerInner() {
               source={data.source}
             />
 
+            {(data.pnl || data.trades) && (
+              <section data-testid="trade-performance">
+                <h2 className="display text-xl font-bold uppercase tracking-wide text-white">Trade Performance</h2>
+                <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {data.pnl?.realized_usd != null && (
+                    <MetricCard
+                      label="Realized PnL"
+                      value={usd(data.pnl.realized_usd)}
+                      accent={data.pnl.realized_usd >= 0 ? "#00ff66" : "#ef4444"}
+                    />
+                  )}
+                  {data.pnl?.win_rate != null && (
+                    <MetricCard
+                      label="Win Rate"
+                      value={`${data.pnl.win_rate.toFixed(1)}%`}
+                      sub={data.pnl.wins != null && data.pnl.losses != null ? `${num(data.pnl.wins)} wins · ${num(data.pnl.losses)} losses` : undefined}
+                    />
+                  )}
+                  {data.trades && (
+                    <MetricCard
+                      label="Recent Trades"
+                      value={`${num(data.trades.count)}${data.trades.sampled ? "+" : ""}`}
+                      sub={data.trades.last_trade_at ? `Last trade ${timeAgo(data.trades.last_trade_at)}` : undefined}
+                    />
+                  )}
+                  {data.trades && (
+                    <MetricCard
+                      label="Traded Volume"
+                      value={usd(data.trades.volume_usd, { compact: true })}
+                      sub={`${num(data.trades.distinct_tokens)} distinct tokens`}
+                    />
+                  )}
+                </div>
+              </section>
+            )}
+
             <section>
               <h2 className="display text-xl font-bold uppercase tracking-wide text-white">Top Holdings</h2>
               {data.holdings.length === 0 ? (
@@ -124,7 +161,10 @@ function TrackerInner() {
                   <span className="chip" style={{ color: RISK_COLOR[data.trading_profile.risk_level], borderColor: `${RISK_COLOR[data.trading_profile.risk_level]}55` }}>
                     Risk · {data.trading_profile.risk_level}
                   </span>
-                  <span className="chip">Activity · {data.trading_profile.trading_activity}</span>
+                  <span className="chip">
+                    Activity · {data.trading_profile.trading_activity}
+                    {data.trading_profile.activity_source === "estimate" ? " (est.)" : ""}
+                  </span>
                 </div>
                 <div className="mt-6 grid gap-5">
                   <Meter label="Meme Exposure" value={data.trading_profile.meme_exposure} color="#a66cff" />

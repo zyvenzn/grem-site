@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Search, Coins, Brain, Activity, ArrowRight, Eye } from "lucide-react";
+import { Search, Coins, Brain, Activity, ArrowRight } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
+import HeroMascot from "@/components/HeroMascot";
 import { MagnifierPixel } from "@/components/Icons";
 
 const FEATURES = [
@@ -54,18 +55,7 @@ export default function Home() {
 
             <div className="relative reveal" style={{ animationDelay: "0.1s" }}>
               <div className="pointer-events-none absolute -inset-6 rounded-[28px] bg-[#00ff66]/10 blur-[70px]" />
-              <div className="panel pixel-corner scanlines relative overflow-hidden rounded-2xl border-[#00ff66]/20">
-                <img
-                  src="/grem-hero.jpg"
-                  alt="GREM in the underground control room, watching wallet activity"
-                  className="w-full object-cover"
-                  style={{ aspectRatio: "16 / 10" }}
-                />
-                <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(7,6,9,0.85))" }} />
-                <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300 backdrop-blur">
-                  <Eye size={12} className="text-[#00ff66]" /> live surveillance · sample feed
-                </div>
-              </div>
+              <HeroMascot />
             </div>
           </div>
         </div>

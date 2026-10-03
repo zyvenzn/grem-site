@@ -8,6 +8,9 @@ type Wallet = {
   token_count: number;
   sol_balance: number;
   sol_value_usd: number;
+  // Optional real-activity data (null/undefined => fall back to holdings-based estimates).
+  pnl?: { win_rate: number | null; realized_usd: number | null } | null;
+  trades?: { count: number; sampled: boolean; distinct_tokens: number } | null;
 };
 
 const pct = (part: number, whole: number) => (whole ? (part / whole) * 100 : 0);
@@ -19,14 +22,27 @@ export function buildTradingProfile(w: Wallet) {
   const lowcapValue = w.holdings.filter((h) => (h.market_cap_usd ?? 0) < 5_000_000).reduce((s, h) => s + h.value_usd, 0);
   const lowCapExposure = Math.round(Math.min(pct(lowcapValue, total), 100));
   const tokenDiversity = Math.round(Math.min(w.token_count / 12, 100));
-  const tradingActivity = w.token_count > 400 ? "High" : w.token_count > 60 ? "Moderate" : "Low";
+  // Prefer real trade history; otherwise estimate from how many tokens the wallet has touched.
+  const tc = w.trades?.count;
+  const activitySource: "trades" | "estimate" = tc != null ? "trades" : "estimate";
+  const tradingActivity =
+    tc != null
+      ? tc >= 100 ? "High" : tc >= 20 ? "Moderate" : "Low"
+      : w.token_count > 400 ? "High" : w.token_count > 60 ? "Moderate" : "Low";
   const riskLevel = memeExposure >= 65 || lowCapExposure >= 45 ? "High" : memeExposure >= 35 || lowCapExposure >= 20 ? "Medium" : "Low";
-  return { risk_level: riskLevel, meme_exposure: memeExposure, trading_activity: tradingActivity, token_diversity: tokenDiversity, low_cap_exposure: lowCapExposure };
+  return {
+    risk_level: riskLevel,
+    meme_exposure: memeExposure,
+    trading_activity: tradingActivity,
+    activity_source: activitySource,
+    token_diversity: tokenDiversity,
+    low_cap_exposure: lowCapExposure,
+  };
 }
 
 export function classifyTrader(w: Wallet, p: ReturnType<typeof buildTradingProfile>) {
   if (w.total_usd >= 250_000) return "Whale";
-  if (p.trading_activity === "High" && w.token_count > 400) return "High-Frequency Trader";
+  if (p.trading_activity === "High" && (w.trades ? w.trades.count >= 100 : w.token_count > 400)) return "High-Frequency Trader";
   if (p.low_cap_exposure >= 45) return "Micro-Cap Hunter";
   if (p.meme_exposure >= 55) return "Meme Speculator";
   if (p.token_diversity >= 60) return "Diversified Trader";
@@ -40,6 +56,8 @@ export function walletScore(w: Wallet, p: ReturnType<typeof buildTradingProfile>
   s += Math.min(p.token_diversity, 60) * 0.35;
   if (w.total_usd > 50_000) s += 10;
   if (w.sol_balance > 10) s += 6;
+  const wr = w.pnl?.win_rate;
+  if (wr != null) s += Math.max(-8, Math.min(8, (wr - 50) * 0.2)); // real closed-trade results nudge the score
   return Math.max(2, Math.min(98, Math.round(s)));
 }
 
@@ -52,6 +70,10 @@ export function detectPatterns(w: Wallet, p: ReturnType<typeof buildTradingProfi
   if (w.token_count > 400) out.push("High transaction frequency");
   if (w.sol_balance > 40) out.push("Large unrealized SOL position");
   if (p.token_diversity >= 60) out.push("Broad token diversification");
+  const wr = w.pnl?.win_rate;
+  if (wr != null && wr >= 60) out.push("Consistently profitable closed trades");
+  if (wr != null && wr <= 35) out.push("Low win rate on closed trades");
+  if (w.trades && w.trades.distinct_tokens >= 15) out.push("Rotates through many tokens");
   if (out.length === 0) out.push("Low-activity, stable footprint");
   return out;
 }
@@ -86,6 +108,8 @@ export function analyze(w: Wallet) {
 
   return {
     trading_profile: profile,
+    pnl: w.pnl ?? null,
+    trades: w.trades ?? null,
     portfolio: {
       total_usd: w.total_usd,
       sol_balance: w.sol_balance,

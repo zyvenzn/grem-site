@@ -22,9 +22,9 @@ function apiKey(): string {
   return k;
 }
 
-async function trackerGet(path: string): Promise<any> {
+async function trackerGet(path: string, timeoutMs = 15000): Promise<any> {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 15000);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   let res: Response;
   try {
     res = await fetch(`${BASE}${path}`, {
@@ -236,4 +236,89 @@ export async function getDiscovery() {
     }
   }
   return Array.from(byMint.values());
+}
+
+// ---------------------------------------------------------------------------
+// Wallet enrichment: real trade history + PnL (Solana Tracker).
+// Both are optional. If the provider has no data, the plan lacks access, or the
+// response shape differs, they resolve to null and the wallet page still works
+// (the intelligence engine falls back to its holdings-based estimate).
+// ---------------------------------------------------------------------------
+
+export type WalletPnl = {
+  realized_usd: number | null;
+  unrealized_usd: number | null;
+  total_usd: number | null;
+  win_rate: number | null; // 0-100
+  wins: number | null;
+  losses: number | null;
+};
+
+export type WalletTrades = {
+  count: number; // trades in the sampled page
+  sampled: boolean; // true when the provider has more trades than we fetched
+  volume_usd: number;
+  distinct_tokens: number;
+  last_trade_at: string | null;
+};
+
+const nullableNum = (v: any): number | null => {
+  const x = typeof v === "string" && v.trim() !== "" ? Number(v) : v;
+  return typeof x === "number" && Number.isFinite(x) ? x : null;
+};
+
+const ENRICH_TIMEOUT_MS = 8000;
+
+export async function getWalletPnl(address: string): Promise<WalletPnl | null> {
+  try {
+    const data = await trackerGet(`/pnl/${address}`, ENRICH_TIMEOUT_MS);
+    const s = data?.summary ?? data ?? {};
+    const pnl: WalletPnl = {
+      realized_usd: nullableNum(s?.realized ?? s?.totalRealized),
+      unrealized_usd: nullableNum(s?.unrealized ?? s?.totalUnrealized),
+      total_usd: nullableNum(s?.total ?? s?.totalPnl),
+      win_rate: nullableNum(s?.winPercentage),
+      wins: nullableNum(s?.totalWins),
+      losses: nullableNum(s?.totalLosses),
+    };
+    return Object.values(pnl).every((v) => v === null) ? null : pnl;
+  } catch {
+    return null;
+  }
+}
+
+export async function getWalletTrades(address: string): Promise<WalletTrades | null> {
+  try {
+    const data = await trackerGet(`/wallet/${address}/trades`, ENRICH_TIMEOUT_MS);
+    const list: any[] = Array.isArray(data?.trades) ? data.trades : Array.isArray(data) ? data : [];
+    if (list.length === 0) return null;
+
+    const mints = new Set<string>();
+    let volume = 0;
+    let last = 0;
+    for (const t of list) {
+      volume += n(t?.volume?.usd, t?.volume);
+      for (const side of [t?.from, t?.to]) {
+        const m = side?.token?.address ?? side?.address;
+        if (typeof m === "string" && !SOL_MINTS.has(m)) mints.add(m);
+      }
+      const ts = n(t?.time, t?.timestamp);
+      if (ts > last) last = ts;
+    }
+    return {
+      count: list.length,
+      sampled: Boolean(data?.hasNextPage ?? data?.nextCursor),
+      volume_usd: Math.round(volume * 100) / 100,
+      distinct_tokens: mints.size,
+      last_trade_at: last ? new Date(last > 1e12 ? last : last * 1000).toISOString() : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function getWalletEnriched(address: string) {
+  const wallet = await getWallet(address);
+  const [pnl, trades] = await Promise.all([getWalletPnl(address), getWalletTrades(address)]);
+  return { ...wallet, pnl, trades };
 }
