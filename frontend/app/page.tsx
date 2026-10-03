@@ -1,6 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Search, Coins, Brain, Activity, ArrowRight, Eye } from "lucide-react";
 import SectionHeading from "@/components/ui/SectionHeading";
+import FeatureCard from "@/components/ui/FeatureCard";
 import { MagnifierPixel } from "@/components/Icons";
 
 const FEATURES = [
@@ -55,12 +57,16 @@ export default function Home() {
             <div className="relative reveal" style={{ animationDelay: "0.1s" }}>
               <div className="pointer-events-none absolute -inset-6 rounded-[28px] bg-[#00ff66]/10 blur-[70px]" />
               <div className="panel pixel-corner scanlines relative overflow-hidden rounded-2xl border-[#00ff66]/20">
-                <img
-                  src="/grem-hero.jpg"
-                  alt="GREM in the underground control room, watching wallet activity"
-                  className="w-full object-cover"
-                  style={{ aspectRatio: "16 / 10" }}
-                />
+                <div className="relative" style={{ aspectRatio: "16 / 10" }}>
+                  <Image
+                    src="/grem-hero.jpg"
+                    alt="GREM in the underground control room, watching wallet activity"
+                    fill
+                    priority
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
+                </div>
                 <div className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, transparent 55%, rgba(7,6,9,0.85))" }} />
                 <div className="absolute bottom-3 left-3 flex items-center gap-2 rounded-md border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-slate-300 backdrop-blur">
                   <Eye size={12} className="text-[#00ff66]" /> live surveillance · sample feed
@@ -70,7 +76,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-14 border-y border-white/8 bg-white/[0.015] py-3.5">
+        <div className="mt-14 border-y border-white/8 bg-white/[0.015] py-3.5" aria-hidden="true">
           <div className="ticker">
             <div className="ticker-track font-mono text-[12px] uppercase tracking-[0.1em] text-slate-500">
               {[...TICKER, ...TICKER].map((t, i) => (
@@ -87,21 +93,15 @@ export default function Home() {
         <SectionHeading eyebrow="Capabilities" title="What GREM Sees" desc="Four lenses GREM uses to turn on-chain noise into intelligence." />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {FEATURES.map((f, i) => (
-            <Link
+            <FeatureCard
               key={f.title}
               href={f.href}
-              data-testid={`feature-card-${i}`}
-              className="panel pixel-corner group relative overflow-hidden p-6 transition-all duration-200 hover:-translate-y-1 hover:border-[#00ff66]/40"
-            >
-              <span className="inline-flex h-12 w-12 items-center justify-center rounded-xl border" style={{ borderColor: `${f.accent}55`, background: `${f.accent}14`, color: f.accent }}>
-                <f.icon size={22} />
-              </span>
-              <h3 className="mt-5 display text-lg font-bold uppercase text-white">{f.title}</h3>
-              <p className="mt-2 text-[14px] leading-relaxed text-slate-400">{f.body}</p>
-              <span className="mt-5 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-slate-500 transition-colors group-hover:text-[#00ff66]">
-                Open <ArrowRight size={13} />
-              </span>
-            </Link>
+              title={f.title}
+              body={f.body}
+              accent={f.accent}
+              icon={<f.icon size={22} />}
+              testId={`feature-card-${i}`}
+            />
           ))}
         </div>
       </section>
@@ -110,7 +110,13 @@ export default function Home() {
         <div className="container-grem">
           <div className="panel pixel-corner scanlines relative grid items-center gap-0 overflow-hidden rounded-2xl md:grid-cols-2">
             <div className="relative min-h-[320px]">
-              <img src="/gremworld.jpg" alt="GREM inside the Green Room" className="absolute inset-0 h-full w-full object-cover" />
+              <Image
+                src="/gremworld.jpg"
+                alt="GREM inside the Green Room"
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
+              />
               <div className="absolute inset-0" style={{ background: "linear-gradient(90deg, transparent, rgba(7,6,9,0.9))" }} />
             </div>
             <div className="relative p-8 sm:p-12">
@@ -131,7 +137,15 @@ export default function Home() {
           <div className="relative order-2 md:order-1">
             <div className="pointer-events-none absolute -inset-4 rounded-2xl bg-[#9945ff]/12 blur-[60px]" />
             <div className="panel pixel-corner relative overflow-hidden rounded-2xl">
-              <img src="/loregrem.jpg" alt="GREM portrait" className="w-full object-cover" style={{ aspectRatio: "4/3" }} />
+              <div className="relative" style={{ aspectRatio: "4 / 3" }}>
+                <Image
+                  src="/loregrem.jpg"
+                  alt="GREM portrait"
+                  fill
+                  sizes="(min-width: 768px) 45vw, 100vw"
+                  className="object-cover"
+                />
+              </div>
             </div>
           </div>
           <div className="order-1 md:order-2">
